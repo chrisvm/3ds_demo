@@ -2,3 +2,5 @@
 *.elf
 *.smdh
 build/
+.idea/
+cmake-build-debug/
