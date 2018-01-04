@@ -27,6 +27,18 @@ void print_inputs(u32 kDown, u32 kHold)
         printf("\x1b[11;0H\x1b[37mB Button");
     }
 
+    if (downAndHold & KEY_X) {
+        printf("\x1b[12;0H\x1b[32mX Button");
+    } else {
+        printf("\x1b[12;0H\x1b[37mX Button");
+    }
+
+    if (downAndHold & KEY_Y) {
+        printf("\x1b[13;0H\x1b[32mY Button");
+    } else {
+        printf("\x1b[13;0H\x1b[37mY Button");
+    }
+
     printf("\x1b[37m");
 }
 
