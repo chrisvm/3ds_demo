@@ -1,6 +1,7 @@
 #include <3ds.h>
 #include <stdio.h>
 
+
 int main()
 {
 	// Initializations
@@ -23,14 +24,20 @@ int main()
 	printf("\x1b[21;16HPress Start to exit.");
 
 	touchPosition touch;
+	circlePosition circlePos;
 
 	// Main loop
 	while (aptMainLoop()) {
 		// Read which buttons are currently pressed or not
 		hidScanInput();
 
+		// print touchpad
 		hidTouchRead(&touch);
 		printf("\x1b[8;0HX:%03d, Y:%03d", touch.px, touch.py);
+
+		// print analog
+		hidCircleRead(&circlePos);
+		printf("\x1b[9;0HX:%03d, Y:%03d", circlePos.dx, circlePos.dy);
 
 		// If START button is pressed, break loop and quit
 		kDown = hidKeysDown();
