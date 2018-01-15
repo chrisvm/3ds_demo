@@ -23,21 +23,20 @@
 
 static Sprite sprites[MAX_SPRITES];
 
-ImageDimension images[1] = {
-	{0.0f, 1.0f, 0.0f, 1.0f},
-};
+ImageDimension image = {0.0f, 1.0f, 0.0f, 1.0f};
 
 //---------------------------------------------------------------------------------
 static void drawSpriteImmediate(size_t idx, int x, int y, int width, int height, int image, VBOEntry* vbo) {
 //---------------------------------------------------------------------------------
 
-	float left = images[image].left;
-	float right = images[image].right;
-	float top = images[image].top;
-	float bottom = images[image].bottom;
+	float left = image.left;
+	float right = image.right;
+	float top = image.top;
+	float bottom = image.bottom;
 
-	if (idx > MAX_IMMEDIATE)
+	if (idx > MAX_IMMEDIATE) {
 		return;
+	}
 
 	// Draw a textured quad directly
 	C3D_ImmDrawBegin(GPU_TRIANGLE_STRIP);
@@ -58,10 +57,10 @@ static void drawSpriteImmediate(size_t idx, int x, int y, int width, int height,
 //---------------------------------------------------------------------------------
 static void drawSpriteVBO(size_t idx, int x, int y, int width, int height, int image, VBOEntry* vbo) {
 //---------------------------------------------------------------------------------
-	float left = images[image].left;
-	float right = images[image].right;
-	float top = images[image].top;
-	float bottom = images[image].bottom;
+	float left = image.left;
+	float right = image.right;
+	float top = image.top;
+	float bottom = image.bottom;
 
 	VBOEntry *entry = &vbo[idx*6];
 
