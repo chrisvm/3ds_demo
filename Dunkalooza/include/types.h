@@ -19,4 +19,21 @@
 #define MAX_SPRITES   1600
 #define MAX_IMMEDIATE 500
 
+//simple sprite struct
+typedef struct {
+    float x,y;			// screen co-ordinates
+    float dx, dy;			// velocity
+    int image;
+} Sprite;
+
+//VBO entry
+typedef struct {
+    float x, y, z;
+    float u, v;
+} VBOEntry;
+
+typedef struct {
+    float left, right, top, bottom;
+} ImageDimension;
+
 #endif //INC_3D_BREW_TYPES_H

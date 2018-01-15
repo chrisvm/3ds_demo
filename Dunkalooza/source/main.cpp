@@ -21,32 +21,14 @@
 #include "vshader_shbin.h"
 #include "kirball_png.h"
 
-//simple sprite struct
-typedef struct {
-	float x,y;			// screen co-ordinates
-	float dx, dy;			// velocity
-	int image;
-}Sprite;
-
 static Sprite sprites[MAX_SPRITES];
 
-struct { float left, right, top, bottom; } images[4] = {
-	{0.0f, 0.5f, 0.0f, 0.5f},
-	{0.5f, 1.0f, 0.0f, 0.5f},
-	{0.0f, 0.5f, 0.5f, 1.0f},
-	{0.5f, 1.0f, 0.5f, 1.0f},
+ImageDimension images[1] = {
+	{0.0f, 1.0f, 0.0f, 1.0f},
 };
 
-//VBO entry
-typedef struct {
-	float x, y, z;
-	float u, v;
-}VBOEntry;
-
-static VBOEntry *vbo;
-
 //---------------------------------------------------------------------------------
-static void drawSpriteImmediate( size_t idx, int x, int y, int width, int height, int image ) {
+static void drawSpriteImmediate(size_t idx, int x, int y, int width, int height, int image, VBOEntry* vbo) {
 //---------------------------------------------------------------------------------
 
 	float left = images[image].left;
@@ -74,7 +56,7 @@ static void drawSpriteImmediate( size_t idx, int x, int y, int width, int height
 }
 
 //---------------------------------------------------------------------------------
-static void drawSpriteVBO( size_t idx, int x, int y, int width, int height, int image ) {
+static void drawSpriteVBO(size_t idx, int x, int y, int width, int height, int image, VBOEntry* vbo) {
 //---------------------------------------------------------------------------------
 	float left = images[image].left;
 	float right = images[image].right;
@@ -92,32 +74,38 @@ static void drawSpriteVBO( size_t idx, int x, int y, int width, int height, int 
 	*entry++ = (VBOEntry){ x+width, y+height, 0.5f, right, bottom };
 }
 
-static DVLB_s* vshader_dvlb;
-static shaderProgram_s program;
-static int uLoc_projection;
+struct SceneContext {
+	shaderProgram_s program;
+	DVLB_s* vshader_dvlb;
+	int uLoc_projection;
+    VBOEntry *vbo;
+};
+
 static C3D_Mtx projection;
 
 static size_t numSprites = 256;
-void (*drawSprite)(size_t,int,int,int,int,int) = drawSpriteImmediate;
+void (*drawSprite)(size_t,int,int,int,int,int, VBOEntry*) = drawSpriteImmediate;
 
 static C3D_Tex spritesheet_tex;
 
 //---------------------------------------------------------------------------------
-static void sceneInit(void) {
+static SceneContext* sceneInit() {
 //---------------------------------------------------------------------------------
+	SceneContext* scene = new SceneContext();
+
 	int i;
 
 	// Load the vertex shader, create a shader program and bind it
-	vshader_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_size);
-	shaderProgramInit(&program);
-	shaderProgramSetVsh(&program, &vshader_dvlb->DVLE[0]);
-	C3D_BindProgram(&program);
+	scene->vshader_dvlb = DVLB_ParseFile((u32*)vshader_shbin, vshader_shbin_size);
+	shaderProgramInit(&scene->program);
+	shaderProgramSetVsh(&scene->program, &scene->vshader_dvlb->DVLE[0]);
+	C3D_BindProgram(&scene->program);
 
 	// Get the location of the uniforms
-	uLoc_projection = shaderInstanceGetUniformLocation(program.vertexShader, "projection");
+	scene->uLoc_projection = shaderInstanceGetUniformLocation(scene->program.vertexShader, "projection");
 
 	// Allocate VBO
-	vbo = (VBOEntry*)linearAlloc(sizeof(VBOEntry) * 6 * MAX_SPRITES);
+    scene->vbo = (VBOEntry*)linearAlloc(sizeof(VBOEntry) * 6 * MAX_SPRITES);
 
 	// Configure attributes for use with the vertex shader
 	// Attribute format and element count are ignored in immediate mode
@@ -133,20 +121,20 @@ static void sceneInit(void) {
 	// Configure buffers
 	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
 	BufInfo_Init(bufInfo);
-	BufInfo_Add(bufInfo, vbo, sizeof(VBOEntry), 2, 0x10);
+	BufInfo_Add(bufInfo, scene->vbo, sizeof(VBOEntry), 2, 0x10);
 
 	unsigned char* image;
 	unsigned width, height;
 
 	lodepng_decode32(&image, &width, &height, kirball_png, kirball_png_size);
 
-	u8 *gpusrc = linearAlloc(width * height * 4);
+	u8 *gpusrc = (u8*) linearAlloc(width * height * 4);
 
 	// GX_DisplayTransfer needs input buffer in linear RAM
 	u8* src=image; u8 *dst=gpusrc;
 
 	// lodepng outputs big endian rgba so we need to convert
-	for(int i = 0; i<width*height; i++) {
+	for (int i = 0; i<width*height; i++) {
 		int r = *src++;
 		int g = *src++;
 		int b = *src++;
@@ -183,22 +171,19 @@ static void sceneInit(void) {
 
 	srand(time(NULL));
 
-	for(i = 0; i < MAX_SPRITES; i++) {
+	for (i = 0; i < MAX_SPRITES; i++) {
 		//random place and speed
 		sprites[i].x = rand() % (400 - 32);
 		sprites[i].y = rand() % (240 - 32);
 		sprites[i].dx = rand()*4.0f/RAND_MAX - 2.0f;
 		sprites[i].dy = rand()*4.0f/RAND_MAX - 2.0f;
 		sprites[i].image = rand() & 3;
-
-/*		if(rand() & 2)
-			sprites[i].dx = -sprites[i].dx;
-		if(rand() & 1)
-			sprites[i].dy = -sprites[i].dy;
-*/	}
+	}
 
 	// Configure depth test to overwrite pixels with the same depth (needed to draw overlapping sprites)
 	C3D_DepthTest(true, GPU_GEQUAL, GPU_WRITE_ALL);
+
+	return scene;
 }
 
 //---------------------------------------------------------------------------------
@@ -221,16 +206,15 @@ static void moveSprites() {
 }
 
 //---------------------------------------------------------------------------------
-static void sceneRender(void) {
+static void sceneRender(SceneContext* scene) {
 //---------------------------------------------------------------------------------
 	size_t i;
 
 	// Update the uniforms
-	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, uLoc_projection, &projection);
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &projection);
 
 	for (i = 0; i < numSprites; i++) {
-
-		drawSprite( i, sprites[i].x, sprites[i].y, 32, 32, sprites[i].image);
+		drawSprite( i, sprites[i].x, sprites[i].y, 32, 32, sprites[i].image, scene->vbo);
 	}
 
 	if (drawSprite == drawSpriteVBO)
@@ -239,15 +223,17 @@ static void sceneRender(void) {
 }
 
 //---------------------------------------------------------------------------------
-static void sceneExit(void) {
+static void sceneExit(SceneContext* scene) {
 //---------------------------------------------------------------------------------
 
 	// Free the shader program
-	shaderProgramFree(&program);
-	DVLB_Free(vshader_dvlb);
+	shaderProgramFree(&scene->program);
+	DVLB_Free(scene->vshader_dvlb);
 
 	// Free the vbo
-	linearFree(vbo);
+	linearFree(scene->vbo);
+
+	delete scene;
 }
 
 //---------------------------------------------------------------------------------
@@ -264,7 +250,7 @@ int main(int argc, char **argv) {
 	C3D_RenderTargetSetOutput(target, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
 
 	// Initialize the scene
-	sceneInit();
+	SceneContext *scene = sceneInit();
 
 	printf("\x1b[7;1HPress Y to switch mode");
 	printf("\x1b[8;1HPress Up to increment sprites");
@@ -318,12 +304,12 @@ int main(int argc, char **argv) {
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
-			sceneRender();
+			sceneRender(scene);
 		C3D_FrameEnd(0);
 	}
 
 	// Deinitialize the scene
-	sceneExit();
+	sceneExit(scene);
 
 	// Deinitialize graphics
 	C3D_Fini();
