@@ -25,6 +25,14 @@ static Sprite sprites[MAX_SPRITES];
 
 ImageDimension image = {0.0f, 1.0f, 0.0f, 1.0f};
 
+struct SceneContext {
+	shaderProgram_s program;
+	DVLB_s* vshader_dvlb;
+	int uLoc_projection;
+    VBOEntry *vbo;
+    C3D_Mtx projection;
+};
+
 //---------------------------------------------------------------------------------
 static void drawSpriteImmediate(size_t idx, int x, int y, int width, int height, int image, VBOEntry* vbo) {
 //---------------------------------------------------------------------------------
@@ -41,16 +49,16 @@ static void drawSpriteImmediate(size_t idx, int x, int y, int width, int height,
 	// Draw a textured quad directly
 	C3D_ImmDrawBegin(GPU_TRIANGLE_STRIP);
 		C3D_ImmSendAttrib(x, y, 0.5f, 0.0f); // v0=position
-		C3D_ImmSendAttrib( left, top, 0.0f, 0.0f);
+		C3D_ImmSendAttrib(left, top, 0.0f, 0.0f);
 
-		C3D_ImmSendAttrib(x, y+height, 0.5f, 0.0f);
-		C3D_ImmSendAttrib( left, bottom, 0.0f, 0.0f);
+		C3D_ImmSendAttrib(x, y + height, 0.5f, 0.0f);
+		C3D_ImmSendAttrib(left, bottom, 0.0f, 0.0f);
 
-		C3D_ImmSendAttrib(x+width, y, 0.5f, 0.0f);
-		C3D_ImmSendAttrib( right, top, 0.0f, 0.0f);
+		C3D_ImmSendAttrib(x + width, y, 0.5f, 0.0f);
+		C3D_ImmSendAttrib(right, top, 0.0f, 0.0f);
 
-		C3D_ImmSendAttrib(x+width, y+height, 0.5f, 0.0f);
-		C3D_ImmSendAttrib( right, bottom, 0.0f, 0.0f);
+		C3D_ImmSendAttrib(x + width, y + height, 0.5f, 0.0f);
+		C3D_ImmSendAttrib(right, bottom, 0.0f, 0.0f);
 	C3D_ImmDrawEnd();
 }
 
@@ -64,28 +72,38 @@ static void drawSpriteVBO(size_t idx, int x, int y, int width, int height, int i
 
 	VBOEntry *entry = &vbo[idx*6];
 
-	*entry++ = (VBOEntry){ x,       y,        0.5f, left,  top    };
-	*entry++ = (VBOEntry){ x,       y+height, 0.5f, left,  bottom };
-	*entry++ = (VBOEntry){ x+width, y,        0.5f, right, top    };
+	*entry++ = (VBOEntry){ x,         y,          0.5f, left,  top    };
+	*entry++ = (VBOEntry){ x,         y + height, 0.5f, left,  bottom };
+	*entry++ = (VBOEntry){ x + width, y,          0.5f, right, top    };
 
 	*entry++ = (VBOEntry){ x+width, y,        0.5f, right, top    };
 	*entry++ = (VBOEntry){ x,       y+height, 0.5f, left,  bottom };
 	*entry++ = (VBOEntry){ x+width, y+height, 0.5f, right, bottom };
 }
 
-struct SceneContext {
-	shaderProgram_s program;
-	DVLB_s* vshader_dvlb;
-	int uLoc_projection;
-    VBOEntry *vbo;
-};
-
-static C3D_Mtx projection;
-
 static size_t numSprites = 256;
+static C3D_Tex spritesheet_tex;
+
 void (*drawSprite)(size_t,int,int,int,int,int, VBOEntry*) = drawSpriteImmediate;
 
-static C3D_Tex spritesheet_tex;
+static void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height) {
+    // GX_DisplayTransfer needs input buffer in linear RAM
+    u8 *src = image;
+    u8 *dst = gpusrc;
+
+    // lodepng outputs big endian rgba so we need to convert
+    for (int i = 0; i < width * height; i++) {
+        int r = *src++;
+        int g = *src++;
+        int b = *src++;
+        int a = *src++;
+
+        *dst++ = a;
+        *dst++ = b;
+        *dst++ = g;
+        *dst++ = r;
+    }
+}
 
 //---------------------------------------------------------------------------------
 static SceneContext* sceneInit() {
@@ -115,7 +133,7 @@ static SceneContext* sceneInit() {
 
 	// Compute the projection matrix
 	// Note: we're setting top to 240 here so origin is at top left.
-	Mtx_OrthoTilt(&projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
+	Mtx_OrthoTilt(&scene->projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
 
 	// Configure buffers
 	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
@@ -129,30 +147,17 @@ static SceneContext* sceneInit() {
 
 	u8 *gpusrc = (u8*) linearAlloc(width * height * 4);
 
-	// GX_DisplayTransfer needs input buffer in linear RAM
-	u8* src=image; u8 *dst=gpusrc;
-
-	// lodepng outputs big endian rgba so we need to convert
-	for (int i = 0; i<width*height; i++) {
-		int r = *src++;
-		int g = *src++;
-		int b = *src++;
-		int a = *src++;
-
-		*dst++ = a;
-		*dst++ = b;
-		*dst++ = g;
-		*dst++ = r;
-	}
+    shiftEndianess(src, dst, width, height);
 
 	// ensure data is in physical ram
-	GSPGPU_FlushDataCache(gpusrc, width*height*4);
+	GSPGPU_FlushDataCache(gpusrc, width * height * 4);
 
 	// Load the texture and bind it to the first texture unit
 	C3D_TexInit(&spritesheet_tex, width, height, GPU_RGBA8);
 
 	// Convert image to 3DS tiled texture format
-	C3D_SafeDisplayTransfer ((u32*)gpusrc, GX_BUFFER_DIM(width,height), (u32*)spritesheet_tex.data, GX_BUFFER_DIM(width,height), TEXTURE_TRANSFER_FLAGS);
+    u32 buffDimension = GX_BUFFER_DIM(width, height);
+	C3D_SafeDisplayTransfer((u32*) gpusrc, buffDimension, (u32*) spritesheet_tex.data, GX_BUFFER_DIM(width, height), TEXTURE_TRANSFER_FLAGS);
 	gspWaitForPPF();
 
 	C3D_TexSetFilter(&spritesheet_tex, GPU_LINEAR, GPU_NEAREST);
