@@ -18,6 +18,8 @@
 
 #define MAX_SPRITES   1600
 #define MAX_IMMEDIATE 500
+#define SCREEN_WIDTH 400
+#define SCREEN_HEIGHT 240
 
 //simple sprite struct
 typedef struct {
