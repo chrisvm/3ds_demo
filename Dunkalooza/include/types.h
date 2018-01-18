@@ -1,5 +1,5 @@
-#ifndef INC_3D_BREW_TYPES_H
-#define INC_3D_BREW_TYPES_H
+#ifndef _TYPES_H_
+#define _TYPES_H_
 
 #define CLEAR_COLOR 0x000000FF
 
