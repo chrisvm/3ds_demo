@@ -88,10 +88,6 @@ static SceneContext* sceneInit() {
 	return scene;
 }
 
-static void sceneExit(SceneContext* scene) {
-	delete scene;
-}
-
 int main(int argc, char **argv) {
 	// Initialize graphics
 	gfxInitDefault();
@@ -144,7 +140,7 @@ int main(int argc, char **argv) {
 	}
 
 	// Deinitialize the scene
-	sceneExit(scene);
+	delete scene;
 
 	// Deinitialize graphics
 	C3D_Fini();
