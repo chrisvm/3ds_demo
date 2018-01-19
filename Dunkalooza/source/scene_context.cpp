@@ -7,3 +7,12 @@ void SceneContext::InitShader() {
 	shaderProgramSetVsh(&this->program, &this->vshader_dvlb->DVLE[0]);
 	C3D_BindProgram(&this->program);
 }
+
+SceneContext::~SceneContext() {
+    // Free the shader program
+	shaderProgramFree(&program);
+	DVLB_Free(vshader_dvlb);
+
+	// Free the vbo
+	linearFree(vbo);
+}

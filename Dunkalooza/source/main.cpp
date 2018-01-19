@@ -66,7 +66,7 @@ static SceneContext* sceneInit() {
 
 	// Convert image to 3DS tiled texture format
     u32 buffDimension = GX_BUFFER_DIM(width, height);
-	C3D_SafeDisplayTransfer((u32*) gpusrc, buffDimension, (u32*) scene->spritesheet_tex.data, GX_BUFFER_DIM(width, height), TEXTURE_TRANSFER_FLAGS);
+	C3D_SafeDisplayTransfer((u32*) gpusrc, buffDimension, (u32*) scene->spritesheet_tex.data, buffDimension, TEXTURE_TRANSFER_FLAGS);
 	gspWaitForPPF();
 
 	C3D_TexSetFilter(&scene->spritesheet_tex, GPU_LINEAR, GPU_NEAREST);
@@ -89,13 +89,6 @@ static SceneContext* sceneInit() {
 }
 
 static void sceneExit(SceneContext* scene) {
-	// Free the shader program
-	shaderProgramFree(&scene->program);
-	DVLB_Free(scene->vshader_dvlb);
-
-	// Free the vbo
-	linearFree(scene->vbo);
-
 	delete scene;
 }
 
