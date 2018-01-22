@@ -25,7 +25,6 @@
 typedef struct {
     float x,y;			// screen co-ordinates
     float dx, dy;			// velocity
-    int image;
 } Sprite;
 
 //VBO entry
