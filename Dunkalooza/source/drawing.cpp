@@ -1,6 +1,7 @@
 #include "drawing.h"
 
-void drawSprites(SceneContext* scene, Sprite* sprites, int numSprites, ImageDimension imgDim) {
+void drawSprites(SceneContext* scene, Sprite* sprites, int numSprites, ImageDimension imgDim)
+{
 	// Update the uniforms
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 
@@ -11,7 +12,8 @@ void drawSprites(SceneContext* scene, Sprite* sprites, int numSprites, ImageDime
     C3D_DrawArrays(GPU_TRIANGLES, 0, numSprites * 6);
 }
 
-void drawSpriteVBO(size_t idx, int x, int y, int width, int height, ImageDimension image, VBOEntry* vbo) {
+void drawSpriteVBO(size_t idx, int x, int y, int width, int height, ImageDimension image, VBOEntry* vbo)
+{
 	float left = image.left;
 	float right = image.right;
 	float top = image.top;
@@ -28,7 +30,8 @@ void drawSpriteVBO(size_t idx, int x, int y, int width, int height, ImageDimensi
 	*entry++ = (VBOEntry){ x+width, y+height, 0.5f, right, bottom };
 }
 
-void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height) {
+void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
+{
     // GX_DisplayTransfer needs input buffer in linear RAM
 
     // lodepng outputs big endian rgba so we need to convert
@@ -45,7 +48,8 @@ void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height) {
     }
 }
 
-void moveSprites(Sprite* sprites, int spriteCount) {
+void moveSprites(Sprite* sprites, int spriteCount)
+{
 	for (int i = 0; i < spriteCount; i++) {
 		sprites[i].x += sprites[i].dx;
 		sprites[i].y += sprites[i].dy;
