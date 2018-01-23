@@ -6,7 +6,7 @@ void drawSprites(SceneContext* scene, Sprite* sprites, int numSprites, ImageDime
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 
 	for (size_t i = 0; i < numSprites; i++) {
-		drawSpriteVBO(i, sprites[i].x, sprites[i].y, 32, 32, imgDim, scene->vbo);
+		drawSpriteVBO(i, sprites[i].x, sprites[i].y, 148, 148, imgDim, scene->vbo);
 	}
 
     C3D_DrawArrays(GPU_TRIANGLES, 0, numSprites * 6);
@@ -55,11 +55,11 @@ void moveSprites(Sprite* sprites, int spriteCount)
 		sprites[i].y += sprites[i].dy;
 
 		//check for collision with the screen boundaries
-		if (sprites[i].x < 1 || sprites[i].x > (400 - 32)) {
+		if (sprites[i].x < 1 || sprites[i].x > (400 - 148)) {
 			sprites[i].dx = -sprites[i].dx;
         }
 
-		if (sprites[i].y < 1 || sprites[i].y > (240 - 32)) {
+		if (sprites[i].y < 1 || sprites[i].y > (240 - 148)) {
 			sprites[i].dy = -sprites[i].dy;
         }
 	}

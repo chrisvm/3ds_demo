@@ -31,6 +31,8 @@ static void loadPngForGpu(SceneContext *scene)
     u8 *gpusrc = (u8*) linearAlloc(width * height * 4);
     shiftEndianess(image, gpusrc, width, height);
 
+    printf("\x1b[7;1HWidth: %zu, Height: %zu\x1b[K", width, height);
+
     // ensure data is in physical ram
     GSPGPU_FlushDataCache(gpusrc, width * height * 4);
 
@@ -39,7 +41,9 @@ static void loadPngForGpu(SceneContext *scene)
 
     // Convert image to 3DS tiled texture format
     u32 buffDimension = GX_BUFFER_DIM(width, height);
-    C3D_SafeDisplayTransfer((u32*) gpusrc, buffDimension, (u32*) scene->spritesheet_tex.data, buffDimension, TEXTURE_TRANSFER_FLAGS);
+    C3D_SafeDisplayTransfer((u32*) gpusrc, buffDimension,
+                            (u32*) scene->spritesheet_tex.data,
+                            buffDimension, TEXTURE_TRANSFER_FLAGS);
     gspWaitForPPF();
 
     C3D_TexSetFilter(&scene->spritesheet_tex, GPU_LINEAR, GPU_NEAREST);
@@ -55,7 +59,8 @@ static SceneContext* sceneInit()
 	scene->InitShader();
 
 	// Get the location of the uniforms
-	scene->uLoc_projection = shaderInstanceGetUniformLocation(scene->program.vertexShader, "projection");
+	scene->uLoc_projection = shaderInstanceGetUniformLocation(scene->program.vertexShader,
+                                                              "projection");
 
 	// Allocate VBO
     scene->vbo = (VBOEntry*) linearAlloc(sizeof(VBOEntry) * 6);
@@ -78,14 +83,16 @@ static SceneContext* sceneInit()
 
     loadPngForGpu(scene);
 
-	// Configure the first fragment shading substage to just pass through the texture color
+	// Configure the first fragment shading substage to just pass through
+    // the texture color
 	// See https://www.opengl.org/sdk/docs/man2/xhtml/glTexEnv.xml for more insight
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
 	C3D_TexEnvSrc(env, C3D_Both, GPU_TEXTURE0, 0, 0);
 	C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
 	C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
 
-	// Configure depth test to overwrite pixels with the same depth (needed to draw overlapping sprites)
+	// Configure depth test to overwrite pixels with the same depth
+    // (needed to draw overlapping sprites)
 	C3D_DepthTest(true, GPU_GEQUAL, GPU_WRITE_ALL);
 
 	return scene;
@@ -98,7 +105,8 @@ int main(int argc, char **argv) {
 	consoleInit(GFX_BOTTOM, NULL);
 
 	// Initialize the render target
-	C3D_RenderTarget* target = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8, GPU_RB_DEPTH24_STENCIL8);
+	C3D_RenderTarget* target = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8,
+                                                      GPU_RB_DEPTH24_STENCIL8);
 	C3D_RenderTargetSetClear(target, C3D_CLEAR_ALL, CLEAR_COLOR, 0);
 	C3D_RenderTargetSetOutput(target, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
 
@@ -113,8 +121,8 @@ int main(int argc, char **argv) {
     srand(time(NULL));
 
 	//random place and speed
-	sprites->x = rand() % (SCREEN_WIDTH - 32);
-	sprites->y = rand() % (SCREEN_HEIGHT - 32);
+	sprites->x = rand() % (SCREEN_WIDTH - 148);
+	sprites->y = rand() % (SCREEN_HEIGHT - 148);
 	sprites->dx = rand()*4.0f/RAND_MAX - 2.0f;
 	sprites->dy = rand()*4.0f/RAND_MAX - 2.0f;
 

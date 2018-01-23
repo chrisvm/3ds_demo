@@ -22,19 +22,19 @@
 #define SCREEN_HEIGHT 240
 
 //simple sprite struct
-typedef struct {
+struct Sprite {
     float x,y;			// screen co-ordinates
     float dx, dy;			// velocity
-} Sprite;
+};
 
 //VBO entry
-typedef struct {
+struct VBOEntry {
     float x, y, z;
     float u, v;
-} VBOEntry;
+};
 
-typedef struct {
+struct ImageDimension {
     float left, right, top, bottom;
-} ImageDimension;
+};
 
 #endif //INC_3D_BREW_TYPES_H
