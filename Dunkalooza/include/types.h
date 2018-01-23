@@ -30,6 +30,9 @@ struct Sprite {
     // screen co-ordinates
     float x, y;
 
+    // screen width and height
+    float width, height;
+
     // velocity
     float dx, dy;
 

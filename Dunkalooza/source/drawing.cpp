@@ -5,7 +5,7 @@ void drawSprites(SceneContext* scene, Sprite* sprites)
 	// Update the uniforms
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 
-	drawSpriteVBO(sprites->x, sprites->y, 148, 148, sprites->imageDimension, scene->vbo);
+	drawSpriteVBO(sprites->x, sprites->y, sprites->width, sprites->height, sprites->imageDimension, scene->vbo);
 
     C3D_DrawArrays(GPU_TRIANGLES, 0, 6);
 }
@@ -44,19 +44,17 @@ void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
     }
 }
 
-void moveSprites(Sprite* sprites, int spriteCount)
+void moveSprites(Sprite* sprites)
 {
-	for (int i = 0; i < spriteCount; i++) {
-		sprites[i].x += sprites[i].dx;
-		sprites[i].y += sprites[i].dy;
+	sprites->x += sprites->dx;
+	sprites->y += sprites->dy;
 
-		//check for collision with the screen boundaries
-		if (sprites[i].x < 1 || sprites[i].x > (400 - 148)) {
-			sprites[i].dx = -sprites[i].dx;
-        }
+	// check for collision with the screen boundaries
+	if (sprites->x < 1 || sprites->x > (400 - 32)) {
+		sprites->dx = -sprites->dx;
+    }
 
-		if (sprites[i].y < 1 || sprites[i].y > (240 - 148)) {
-			sprites[i].dy = -sprites[i].dy;
-        }
-	}
+	if (sprites->y < 1 || sprites->y > (240 - 32)) {
+		sprites->dy = -sprites->dy;
+    }
 }
