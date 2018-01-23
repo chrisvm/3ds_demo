@@ -21,20 +21,26 @@
 #define SCREEN_WIDTH 400
 #define SCREEN_HEIGHT 240
 
+struct ImageDimension {
+    float left, right, top, bottom;
+};
+
 //simple sprite struct
 struct Sprite {
-    float x,y;			// screen co-ordinates
-    float dx, dy;			// velocity
+    // screen co-ordinates
+    float x, y;
+
+    // velocity
+    float dx, dy;
+
+    // image dimension
+    ImageDimension imageDimension;
 };
 
 //VBO entry
 struct VBOEntry {
     float x, y, z;
     float u, v;
-};
-
-struct ImageDimension {
-    float left, right, top, bottom;
 };
 
 #endif //INC_3D_BREW_TYPES_H

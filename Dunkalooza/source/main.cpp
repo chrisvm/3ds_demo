@@ -114,8 +114,8 @@ int main(int argc, char **argv) {
 	SceneContext *scene = sceneInit();
 
     // create sprites
-    ImageDimension image = {0.0f, 1.0f, 0.0f, 1.0f};
     Sprite *sprites = new Sprite();
+    sprites->imageDimension = {0.0f, 1.0f, 0.0f, 1.0f};
     uint numSprites = 1;
 
     srand(time(NULL));
@@ -144,7 +144,7 @@ int main(int argc, char **argv) {
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
-			drawSprites(scene, sprites, numSprites, image);
+			drawSprites(scene, sprites);
 		C3D_FrameEnd(0);
 	}
 
