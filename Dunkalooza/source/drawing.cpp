@@ -43,18 +43,3 @@ void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
         *dst++ = r;
     }
 }
-
-void moveSprites(Sprite* sprites)
-{
-	sprites->x += sprites->dx;
-	sprites->y += sprites->dy;
-
-	// check for collision with the screen boundaries
-	if (sprites->x < 1 || sprites->x > (400 - 32)) {
-		sprites->dx = -sprites->dx;
-    }
-
-	if (sprites->y < 1 || sprites->y > (240 - 32)) {
-		sprites->dy = -sprites->dy;
-    }
-}

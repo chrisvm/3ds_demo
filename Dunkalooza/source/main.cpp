@@ -15,6 +15,84 @@
 #include "ballsprites_png.h"
 #include "vshader_shbin.h"
 
+static void moveSprites(Sprite* sprites);
+static void printDebugInfo();
+static void loadPngForGpu(SceneContext *scene);
+static SceneContext* sceneInit();
+
+int main(int argc, char **argv) {
+	// Initialize graphics
+	gfxInitDefault();
+	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+	consoleInit(GFX_BOTTOM, NULL);
+
+	// Initialize the render target
+	C3D_RenderTarget* target = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8,
+                                                      GPU_RB_DEPTH24_STENCIL8);
+	C3D_RenderTargetSetClear(target, C3D_CLEAR_ALL, CLEAR_COLOR, 0);
+	C3D_RenderTargetSetOutput(target, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
+
+	// Initialize the scene
+	SceneContext *scene = sceneInit();
+
+    // create sprites
+    Sprite *sprites = new Sprite();
+    sprites->imageDimension = {0.0f, 0.5f, 0.0f, 0.5f};
+    sprites->width = sprites->height = 32;
+
+    srand(time(NULL));
+
+	// random place and speed
+	sprites->x = rand() % (SCREEN_WIDTH - 148);
+	sprites->y = rand() % (SCREEN_HEIGHT - 148);
+	sprites->dx = rand()*4.0f/RAND_MAX - 2.0f;
+	sprites->dy = rand()*4.0f/RAND_MAX - 2.0f;
+
+	// Main loop
+	while (aptMainLoop()) {
+
+		hidScanInput();
+
+		// Respond to user input
+		u32 kDown = hidKeysDown();
+		if (kDown & KEY_START) {
+			break; // break in order to return to hbmenu
+        }
+
+		moveSprites(sprites);
+        printDebugInfo();
+
+		// Render the scene
+		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+			C3D_FrameDrawOn(target);
+			drawSprites(scene, sprites);
+		C3D_FrameEnd(0);
+	}
+
+	// Deinitialize the scene
+	delete scene;
+
+	// Deinitialize graphics
+	C3D_Fini();
+	gfxExit();
+	return 0;
+}
+
+static void moveSprites(Sprite* sprites)
+{
+	sprites->x += sprites->dx;
+	sprites->y += sprites->dy;
+
+	// check for collision with the screen boundaries
+	if (sprites->x < 1 || sprites->x > (400 - 32)) {
+		sprites->dx = -sprites->dx;
+    }
+
+	if (sprites->y < 1 || sprites->y > (240 - 32)) {
+		sprites->dy = -sprites->dy;
+    }
+}
+
 static void printDebugInfo()
 {
     printf("\x1b[3;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime() * 6.0f);
@@ -77,62 +155,4 @@ static SceneContext* sceneInit()
 	C3D_DepthTest(true, GPU_GEQUAL, GPU_WRITE_ALL);
 
 	return scene;
-}
-
-int main(int argc, char **argv) {
-	// Initialize graphics
-	gfxInitDefault();
-	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
-	consoleInit(GFX_BOTTOM, NULL);
-
-	// Initialize the render target
-	C3D_RenderTarget* target = C3D_RenderTargetCreate(240, 400, GPU_RB_RGBA8,
-                                                      GPU_RB_DEPTH24_STENCIL8);
-	C3D_RenderTargetSetClear(target, C3D_CLEAR_ALL, CLEAR_COLOR, 0);
-	C3D_RenderTargetSetOutput(target, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
-
-	// Initialize the scene
-	SceneContext *scene = sceneInit();
-
-    // create sprites
-    Sprite *sprites = new Sprite();
-    sprites->imageDimension = {0.0f, 0.5f, 0.0f, 0.5f};
-    sprites->width = sprites->height = 32;
-
-    srand(time(NULL));
-
-	// random place and speed
-	sprites->x = rand() % (SCREEN_WIDTH - 148);
-	sprites->y = rand() % (SCREEN_HEIGHT - 148);
-	sprites->dx = rand()*4.0f/RAND_MAX - 2.0f;
-	sprites->dy = rand()*4.0f/RAND_MAX - 2.0f;
-
-	// Main loop
-	while (aptMainLoop()) {
-
-		hidScanInput();
-
-		// Respond to user input
-		u32 kDown = hidKeysDown();
-		if (kDown & KEY_START) {
-			break; // break in order to return to hbmenu
-        }
-
-		moveSprites(sprites);
-        printDebugInfo();
-
-		// Render the scene
-		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-			C3D_FrameDrawOn(target);
-			drawSprites(scene, sprites);
-		C3D_FrameEnd(0);
-	}
-
-	// Deinitialize the scene
-	delete scene;
-
-	// Deinitialize graphics
-	C3D_Fini();
-	gfxExit();
-	return 0;
 }
