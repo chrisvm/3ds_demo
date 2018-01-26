@@ -21,9 +21,9 @@ void drawSpriteVBO(int x, int y, int width, int height, ImageDimension image, VB
 	*vbo++ = (VBOEntry){ x,         y + height, 0.5f, left,  bottom };
 	*vbo++ = (VBOEntry){ x + width, y,          0.5f, right, top    };
 
-	*vbo++ = (VBOEntry){ x+width, y,        0.5f, right, top    };
-	*vbo++ = (VBOEntry){ x,       y+height, 0.5f, left,  bottom };
-	*vbo++ = (VBOEntry){ x+width, y+height, 0.5f, right, bottom };
+	*vbo++ = (VBOEntry){ x + width, y,          0.5f, right, top    };
+	*vbo++ = (VBOEntry){ x,         y + height, 0.5f, left,  bottom };
+	*vbo++ = (VBOEntry){ x + width, y + height, 0.5f, right, bottom };
 }
 
 void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
