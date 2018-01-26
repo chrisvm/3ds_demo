@@ -15,7 +15,7 @@
 #include "ballsprites_png.h"
 #include "vshader_shbin.h"
 
-static void moveSprites(Sprite* sprites);
+static void moveSprite(Sprite* sprites);
 static void printDebugInfo();
 static void loadPngForGpu(SceneContext *scene);
 static SceneContext* sceneInit();
@@ -36,17 +36,17 @@ int main(int argc, char **argv) {
 	SceneContext *scene = sceneInit();
 
     // create sprites
-    Sprite *sprites = new Sprite();
-    sprites->imageDimension = {0.0f, 0.5f, 0.0f, 0.5f};
-    sprites->width = sprites->height = 32;
+    Sprite *sprite = new Sprite();
+    sprite->imageDimension = {0.0f, 0.5f, 0.0f, 0.5f};
+    sprite->width = sprite->height = 32;
 
     srand(time(NULL));
 
 	// random place and speed
-	sprites->x = rand() % (SCREEN_WIDTH - 148);
-	sprites->y = rand() % (SCREEN_HEIGHT - 148);
-	sprites->dx = rand()*4.0f/RAND_MAX - 2.0f;
-	sprites->dy = rand()*4.0f/RAND_MAX - 2.0f;
+	sprite->x = rand() % (SCREEN_WIDTH - 148);
+	sprite->y = rand() % (SCREEN_HEIGHT - 148);
+	sprite->dx = rand()*4.0f/RAND_MAX - 2.0f;
+	sprite->dy = rand()*4.0f/RAND_MAX - 2.0f;
 
 	// Main loop
 	while (aptMainLoop()) {
@@ -59,13 +59,13 @@ int main(int argc, char **argv) {
 			break; // break in order to return to hbmenu
         }
 
-		moveSprites(sprites);
+		moveSprite(sprite);
         printDebugInfo();
 
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
-			drawSprites(scene, sprites);
+			drawSprite(scene, sprite);
 		C3D_FrameEnd(0);
 	}
 
@@ -78,18 +78,18 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-static void moveSprites(Sprite* sprites)
+static void moveSprite(Sprite* sprite)
 {
-	sprites->x += sprites->dx;
-	sprites->y += sprites->dy;
+	sprite->x += sprite->dx;
+	sprite->y += sprite->dy;
 
 	// check for collision with the screen boundaries
-	if (sprites->x < 1 || sprites->x > (400 - 32)) {
-		sprites->dx = -sprites->dx;
+	if (sprite->x < 1 || sprite->x > (400 - 32)) {
+		sprite->dx = -sprite->dx;
     }
 
-	if (sprites->y < 1 || sprites->y > (240 - 32)) {
-		sprites->dy = -sprites->dy;
+	if (sprite->y < 1 || sprite->y > (240 - 32)) {
+		sprite->dy = -sprite->dy;
     }
 }
 

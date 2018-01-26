@@ -1,11 +1,11 @@
 #include "drawing.h"
 
-void drawSprites(SceneContext* scene, Sprite* sprites)
+void drawSprite(SceneContext* scene, Sprite* sprite)
 {
 	// Update the uniforms
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 
-	drawSpriteVBO(sprites->x, sprites->y, sprites->width, sprites->height, sprites->imageDimension, scene->vbo);
+	drawSpriteVBO(sprite->x, sprite->y, sprite->width, sprite->height, sprite->imageDimension, scene->vbo);
 
     C3D_DrawArrays(GPU_TRIANGLES, 0, 6);
 }
