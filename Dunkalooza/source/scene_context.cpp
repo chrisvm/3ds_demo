@@ -25,6 +25,10 @@ void SceneContext::InitShader() {
 	C3D_TexEnvSrc(env, C3D_Both, GPU_TEXTURE0, 0, 0);
 	C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
 	C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
+
+	// Configure depth test to overwrite pixels with the same depth
+    // (needed to draw overlapping sprites)
+	C3D_DepthTest(true, GPU_GEQUAL, GPU_WRITE_ALL);
 }
 
 SceneContext::~SceneContext() {

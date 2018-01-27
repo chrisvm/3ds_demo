@@ -36,6 +36,9 @@ struct Sprite {
     // velocity
     float dx, dy;
 
+	// ratation support
+	float rotation, ang_vel;
+
     // image dimension
     ImageDimension imageDimension;
 };
