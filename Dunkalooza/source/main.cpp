@@ -89,6 +89,11 @@ static void moveSprite(Sprite* sprite, u32 kDown)
 	if ((kDown & KEY_RIGHT) != 0) {
 		sprite->rotation += sprite->ang_vel;
 	}
+
+	if ((kDown & KEY_UP) != 0) {
+		sprite->x += cos(sprite->rotation - M_PI_2) * 5;
+		sprite->y += sin(sprite->rotation - M_PI_2) * 5;
+	}
 }
 
 static void printDebugInfo()
