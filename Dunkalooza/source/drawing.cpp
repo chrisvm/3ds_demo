@@ -2,6 +2,10 @@
 
 void drawSprite(SceneContext* scene, Sprite* sprite)
 {
+	// create rotation matrix
+	C3D_FVec rotAxis = FVec4_New(sprite->x, sprite->y, 0.5f, 1.0f);
+	//todo: create rotation matrix to send to gpu uniform
+	
 	// Update the uniforms
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 
