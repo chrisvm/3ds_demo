@@ -2,6 +2,7 @@
 
 ; Uniforms
 .fvec projection[4]
+.fvec model[4]
 
 ; Constants
 .constf myconst(0.0, 1.0, -1.0, 0.1)
