@@ -9,7 +9,10 @@ void SceneContext::InitShader() {
 
 	// Get the location of the uniforms
 	uLoc_projection = shaderInstanceGetUniformLocation(program.vertexShader,
-                                                              "projection");
+                                                       "projection");
+
+	uLoc_model = shaderInstanceGetUniformLocation(program.vertexShader,
+													  "model");
 
 	// Configure attributes for use with the vertex shader
 	// Attribute format and element count are ignored in immediate mode

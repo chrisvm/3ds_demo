@@ -25,24 +25,6 @@ struct ImageDimension {
     float left, right, top, bottom;
 };
 
-//simple sprite struct
-struct Sprite {
-    // screen co-ordinates
-    float x, y;
-
-    // screen width and height
-    float width, height;
-
-    // velocity
-    float dx, dy;
-
-	// ratation support
-	float rotation, ang_vel;
-
-    // image dimension
-    ImageDimension imageDimension;
-};
-
 //VBO entry
 struct VBOEntry {
     float x, y, z;

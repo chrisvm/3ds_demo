@@ -11,6 +11,7 @@ struct SceneContext {
 	shaderProgram_s program;
 	DVLB_s* vshader_dvlb;
 	int uLoc_projection;
+	int uLoc_model;
     VBOEntry *vbo;
     C3D_Mtx projection;
     C3D_Tex spritesheet_tex;
