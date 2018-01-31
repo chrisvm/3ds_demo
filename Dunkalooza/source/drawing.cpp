@@ -14,11 +14,8 @@ void drawSprite(SceneContext* scene, Sprite* sprite)
 
 void drawSpriteToVBO(Sprite* sprite, VBOEntry* vbo)
 {
-	float x = sprite->x;
-	float y = sprite->y;
 	float width = sprite->width;
 	float height = sprite->height;
-	float rotation = sprite->rotation;
 
 	ImageDimension image = sprite->imageDimension;
 	float left = image.left;
@@ -26,24 +23,13 @@ void drawSpriteToVBO(Sprite* sprite, VBOEntry* vbo)
 	float top = image.top;
 	float bottom = image.bottom;
 
-	vbo[0] = (VBOEntry){ x,         y,          0.5f, left,  top    };
-	vbo[1] = (VBOEntry){ x,         y + height, 0.5f, left,  bottom };
-	vbo[2] = (VBOEntry){ x + width, y,          0.5f, right, top    };
+	vbo[0] = (VBOEntry){ 0, 0, 0.5f, left, top };
+	vbo[1] = (VBOEntry){ 0, height, 0.5f, left, bottom };
+	vbo[2] = (VBOEntry){ width, 0, 0.5f, right, top };
 
-	vbo[3] = (VBOEntry){ x + width, y,          0.5f, right, top    };
-	vbo[4] = (VBOEntry){ x,         y + height, 0.5f, left,  bottom };
-	vbo[5] = (VBOEntry){ x + width, y + height, 0.5f, right, bottom };
-
-	// apply rotation matrix
-	// float sinTheta = sin(rotation), cosTheta = cos(rotation);
-	// float xOrigTrans = (sprite->x + sprite->width / 2);
-	// float yOrigTrans = (sprite->y + sprite->height / 2);
-	// for (int index = 0; index < 6; index++) {
-	// 	x = vbo[index].x - xOrigTrans;
-	// 	y = vbo[index].y - yOrigTrans;
-	// 	vbo[index].x = (cosTheta * x) - (sinTheta * y) + xOrigTrans;
-	// 	vbo[index].y = (sinTheta * x) + (cosTheta * y) + yOrigTrans;
-	// }
+	vbo[3] = (VBOEntry){ width, 0, 0.5f, right, top };
+	vbo[4] = (VBOEntry){ 0, height, 0.5f, left, bottom };
+	vbo[5] = (VBOEntry){ width, height, 0.5f, right, bottom };
 }
 
 void shiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
