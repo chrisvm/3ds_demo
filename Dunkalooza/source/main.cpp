@@ -40,6 +40,7 @@ int main(int argc, char **argv) {
     Sprite *sprite = new Sprite();
     sprite->imageDimension = {0.0f, 1.0f, 0.0f, 1.0f};
     sprite->width = sprite->height = 32;
+	sprite->origin_x = sprite->origin_y = 0.5f;
 	sprite->ang_vel = 0.04;
 
 	// random place and speed

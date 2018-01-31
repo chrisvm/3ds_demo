@@ -12,5 +12,6 @@ C3D_Mtx* Sprite::CalculateModelMatrix()
 	Mtx_Identity(&model);
 	Mtx_Translate(&model, this->x, this->y, 0, true);
 	Mtx_RotateZ(&model, rotation, true);
+	Mtx_Translate(&model, -this->origin_x * this->width, -this->origin_y * this->height, 0, true);
 	return &model;
 }

@@ -16,6 +16,8 @@ public:
     // velocity
     float dx, dy;
 
+    float origin_x, origin_y;
+    
 	// ratation support
 	float rotation, ang_vel;
 
