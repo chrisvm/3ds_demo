@@ -16,19 +16,18 @@ public:
     // velocity
     float dx, dy;
 
+    // sprite origin
     float origin_x, origin_y;
-    
+
 	// ratation support
 	float rotation, ang_vel;
 
     // image dimension
     ImageDimension imageDimension;
 
-    Sprite();
 	C3D_Mtx* CalculateModelMatrix();
 
 private:
-    C3D_FVec rotationAxis;
 	C3D_Mtx model;
 };
 

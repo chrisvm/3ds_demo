@@ -1,17 +1,12 @@
 #include "sprite.h"
 
-Sprite::Sprite()
-{
-	rotationAxis = FVec4_New(this->x, this->y, 0.0f, 1.0f);
-}
-
 C3D_Mtx* Sprite::CalculateModelMatrix()
 {
-	rotationAxis.x = this->x;
-	rotationAxis.y = this->y;
 	Mtx_Identity(&model);
 	Mtx_Translate(&model, this->x, this->y, 0, true);
 	Mtx_RotateZ(&model, rotation, true);
-	Mtx_Translate(&model, -this->origin_x * this->width, -this->origin_y * this->height, 0, true);
+	float x_trans = -this->origin_x * this->width;
+	float y_trans = -this->origin_y * this->height;
+	Mtx_Translate(&model, x_trans, y_trans, 0, true);
 	return &model;
 }

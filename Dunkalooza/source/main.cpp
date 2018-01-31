@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
 	sprite->origin_x = sprite->origin_y = 0.5f;
 	sprite->ang_vel = 0.04;
 
-	// random place and speed
+	// place on center
 	sprite->x = SCREEN_WIDTH / 2 - (sprite->width / 2);
 	sprite->y = SCREEN_HEIGHT / 2 - (sprite->height / 2);
 	sprite->dx = sprite->dy = 0;
