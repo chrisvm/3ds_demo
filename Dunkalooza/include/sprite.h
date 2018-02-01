@@ -26,6 +26,7 @@ public:
     ImageDimension imageDimension;
 
 	C3D_Mtx* CalculateModelMatrix();
+    void WriteToVBO(VBOEntry* vbo, int startingIndex);
 
 private:
 	C3D_Mtx model;

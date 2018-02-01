@@ -7,8 +7,6 @@ void drawSprite(SceneContext* scene, Sprite* sprite)
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_model, model);
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 
-	drawSpriteToVBO(sprite, scene->vbo);
-
     C3D_DrawArrays(GPU_TRIANGLES, 0, 6);
 }
 

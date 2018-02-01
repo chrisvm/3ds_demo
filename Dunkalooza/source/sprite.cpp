@@ -10,3 +10,19 @@ C3D_Mtx* Sprite::CalculateModelMatrix()
 	Mtx_Translate(&model, x_trans, y_trans, 0, true);
 	return &model;
 }
+
+void Sprite::WriteToVBO(VBOEntry* vbo, int startingIndex)
+{
+	float left = imageDimension.left;
+	float right = imageDimension.right;
+	float top = imageDimension.top;
+	float bottom = imageDimension.bottom;
+
+	vbo[startingIndex + 0] = (VBOEntry){ 0, 0, 0.5f, left, top };
+	vbo[startingIndex + 1] = (VBOEntry){ 0, height, 0.5f, left, bottom };
+	vbo[startingIndex + 2] = (VBOEntry){ width, 0, 0.5f, right, top };
+
+	vbo[startingIndex + 3] = (VBOEntry){ width, 0, 0.5f, right, top };
+	vbo[startingIndex + 4] = (VBOEntry){ 0, height, 0.5f, left, bottom };
+	vbo[startingIndex + 5] = (VBOEntry){ width, height, 0.5f, right, bottom };
+}

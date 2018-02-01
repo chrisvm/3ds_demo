@@ -19,7 +19,7 @@
 .proc main
 	; Force the w component of inpos to be 1.0
 	mov r0.xyz, inpos
-	mov r0.w,   ones
+	mov r0.w, ones
 
 	; r1 = modelMatrix * inpos
 	dp4 r1.x, model[0], r0

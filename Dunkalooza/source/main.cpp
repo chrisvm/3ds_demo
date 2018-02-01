@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
     sprite->width = sprite->height = 32;
 	sprite->origin_x = sprite->origin_y = 0.5f;
 	sprite->ang_vel = 0.04;
+	sprite->WriteToVBO(scene->vbo, 0);
 
 	// place on center
 	sprite->x = SCREEN_WIDTH / 2 - (sprite->width / 2);
