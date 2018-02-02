@@ -3,13 +3,11 @@
 #include "sprite.h"
 #include "spaceship_png.h"
 #include "types.h"
-#include "drawing.h"
-#include "lodepng.h"
 
 class Ship : public Sprite {
 
 public:
-	void LoadImage();
+	void Load();
 };
 
 #endif

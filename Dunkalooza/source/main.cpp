@@ -8,7 +8,6 @@
 
 #include "types.h"
 #include "scene_context.h"
-#include "drawing.h"
 #include "sprite.h"
 #include "ship.h"
 
@@ -35,7 +34,7 @@ int main(int argc, char **argv) {
     Ship *sprite = new Ship();
 	sprite->origin_x = sprite->origin_y = 0.5f;
 	sprite->ang_vel = 0.04;
-	sprite->LoadImage();
+	sprite->Load();
 	sprite->WriteToVBO(scene->vbo, 0);
 
 	// place on center
@@ -61,7 +60,7 @@ int main(int argc, char **argv) {
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
-			drawSprite(scene, sprite);
+			sprite->Draw(scene);
 		C3D_FrameEnd(0);
 	}
 

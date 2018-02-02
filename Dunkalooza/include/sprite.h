@@ -2,6 +2,8 @@
 #define _SPRITE_H_
 #include <citro3d.h>
 #include "types.h"
+#include "lodepng.h"
+#include "scene_context.h"
 
 //simple sprite struct
 class Sprite {
@@ -31,9 +33,15 @@ public:
 	C3D_Mtx* CalculateModelMatrix();
     void WriteToVBO(VBOEntry* vbo, int startingIndex);
     void BindToTextureUnit(int unitIndex);
-    
+    void Draw(SceneContext* scene);
+
+protected:
+    void LoadImage(const unsigned char* in, size_t size);
+
 private:
 	C3D_Mtx model;
+
+    void ShiftEndianess(u8* src, u8* dst, unsigned width, unsigned height);
 };
 
 #endif
