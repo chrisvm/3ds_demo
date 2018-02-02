@@ -25,9 +25,13 @@ public:
     // image dimension
     ImageDimension imageDimension;
 
+    // gpu texture
+    C3D_Tex spritesheet_tex;
+
 	C3D_Mtx* CalculateModelMatrix();
     void WriteToVBO(VBOEntry* vbo, int startingIndex);
-
+    void BindToTextureUnit(int unitIndex);
+    
 private:
 	C3D_Mtx model;
 };

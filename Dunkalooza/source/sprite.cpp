@@ -26,3 +26,8 @@ void Sprite::WriteToVBO(VBOEntry* vbo, int startingIndex)
 	vbo[startingIndex + 4] = (VBOEntry){ 0, height, 0.5f, left, bottom };
 	vbo[startingIndex + 5] = (VBOEntry){ width, height, 0.5f, right, bottom };
 }
+
+void Sprite::BindToTextureUnit(int unitIndex) 
+{
+	C3D_TexBind(unitIndex, &spritesheet_tex);
+}
