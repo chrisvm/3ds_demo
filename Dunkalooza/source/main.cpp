@@ -66,6 +66,7 @@ int main(int argc, char **argv) {
 
 	// Deinitialize the scene
 	delete scene;
+	delete ship;
 
 	// Deinitialize graphics
 	C3D_Fini();

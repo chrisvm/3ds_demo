@@ -11,6 +11,16 @@ C3D_Mtx* Sprite::CalculateModelMatrix()
 	return &model;
 }
 
+void Sprite::Draw(SceneContext* scene)
+{
+	// Update the uniforms
+	C3D_Mtx *model = CalculateModelMatrix();
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_model, model);
+	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
+	BindToTextureUnit(0);
+    C3D_DrawArrays(GPU_TRIANGLES, 0, 6);
+}
+
 void Sprite::WriteToVBO(VBOEntry* vbo, int startingIndex)
 {
 	float left = imageDimension.left;
@@ -75,14 +85,4 @@ void Sprite::ShiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
         *dst++ = g;
         *dst++ = r;
     }
-}
-
-void Sprite::Draw(SceneContext* scene)
-{
-	// Update the uniforms
-	C3D_Mtx *model = CalculateModelMatrix();
-	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_model, model);
-	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
-	BindToTextureUnit(0);
-    C3D_DrawArrays(GPU_TRIANGLES, 0, 6);
 }
