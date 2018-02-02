@@ -11,7 +11,7 @@
 #include "sprite.h"
 #include "ship.h"
 
-static void moveSprite(Sprite* sprites, u32 kDown);
+static void moveSprite(Sprite* sprite, u32 kDown);
 static void printDebugInfo();
 static SceneContext* sceneInit();
 
@@ -31,16 +31,16 @@ int main(int argc, char **argv) {
 	SceneContext *scene = sceneInit();
 
     // create sprites
-    Ship *sprite = new Ship();
-	sprite->origin_x = sprite->origin_y = 0.5f;
-	sprite->ang_vel = 0.04;
-	sprite->Load();
-	sprite->WriteToVBO(scene->vbo, 0);
+    Ship *ship = new Ship();
+	ship->origin_x = ship->origin_y = 0.5f;
+	ship->ang_vel = 0.04;
+	ship->Load();
+	ship->WriteToVBO(scene->vbo, 0);
 
 	// place on center
-	sprite->x = SCREEN_WIDTH / 2 - (sprite->width / 2);
-	sprite->y = SCREEN_HEIGHT / 2 - (sprite->height / 2);
-	sprite->dx = sprite->dy = 0;
+	ship->x = SCREEN_WIDTH / 2 - (ship->width / 2);
+	ship->y = SCREEN_HEIGHT / 2 - (ship->height / 2);
+	ship->dx = ship->dy = 0;
 
 	// Main loop
 	while (aptMainLoop()) {
@@ -54,13 +54,13 @@ int main(int argc, char **argv) {
         }
 
 		u32 kHeld = hidKeysHeld();
-		moveSprite(sprite, kHeld);
+		moveSprite(ship, kHeld);
         printDebugInfo();
 
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
-			sprite->Draw(scene);
+			ship->Draw(scene);
 		C3D_FrameEnd(0);
 	}
 
