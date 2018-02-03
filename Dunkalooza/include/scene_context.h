@@ -15,6 +15,7 @@ struct SceneContext {
     VBOEntry *vbo;
     C3D_Mtx projection;
 
+	SceneContext();
     ~SceneContext();
     void InitShader();
 };

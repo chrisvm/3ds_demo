@@ -18,16 +18,17 @@ void Sprite::Draw(SceneContext* scene)
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_model, model);
 	C3D_FVUnifMtx4x4(GPU_VERTEX_SHADER, scene->uLoc_projection, &scene->projection);
 	BindToTextureUnit(0);
-    C3D_DrawArrays(GPU_TRIANGLES, 0, 6);
+	C3D_DrawArrays(GPU_TRIANGLES, vboIndex * 6, 6);
 }
 
-void Sprite::WriteToVBO(VBOEntry* vbo, int startingIndex)
+void Sprite::WriteToVBO(VBOEntry* vbo)
 {
 	float left = imageDimension.left;
 	float right = imageDimension.right;
 	float top = imageDimension.top;
 	float bottom = imageDimension.bottom;
 
+	int startingIndex = vboIndex * 6;
 	vbo[startingIndex + 0] = (VBOEntry){ 0, 0, 0.5f, left, top };
 	vbo[startingIndex + 1] = (VBOEntry){ 0, height, 0.5f, left, bottom };
 	vbo[startingIndex + 2] = (VBOEntry){ width, 0, 0.5f, right, top };
@@ -37,7 +38,7 @@ void Sprite::WriteToVBO(VBOEntry* vbo, int startingIndex)
 	vbo[startingIndex + 5] = (VBOEntry){ width, height, 0.5f, right, bottom };
 }
 
-void Sprite::BindToTextureUnit(int unitIndex) 
+void Sprite::BindToTextureUnit(int unitIndex)
 {
 	C3D_TexBind(unitIndex, &spritesheet_tex);
 }

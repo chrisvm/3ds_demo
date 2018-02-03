@@ -10,10 +10,11 @@
 #include "scene_context.h"
 #include "sprite.h"
 #include "ship.h"
+#include "bullets.h"
 
-static void moveSprite(Sprite* sprite, u32 kDown);
+static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime);
 static void printDebugInfo();
-static SceneContext* sceneInit();
+static const float DELTA_TIME = 1/128.0f;
 
 int main(int argc, char **argv) {
 	// Initialize graphics
@@ -28,44 +29,52 @@ int main(int argc, char **argv) {
 	C3D_RenderTargetSetOutput(target, GFX_TOP, GFX_LEFT, DISPLAY_TRANSFER_FLAGS);
 
 	// Initialize the scene
-	SceneContext *scene = sceneInit();
+	SceneContext *scene = new SceneContext();
 
-    // create sprites
-    Ship *ship = new Ship();
+	// create sprites
+	Ship *ship = new Ship();
 	ship->origin_x = ship->origin_y = 0.5f;
-	ship->ang_vel = 0.04;
+	ship->ang_vel = 3;
 	ship->Load();
-	ship->WriteToVBO(scene->vbo, 0);
+	ship->WriteToVBO(scene->vbo);
 
 	// place on center
 	ship->x = SCREEN_WIDTH / 2 - (ship->width / 2);
 	ship->y = SCREEN_HEIGHT / 2 - (ship->height / 2);
 	ship->dx = ship->dy = 0;
 
+	// create bullet manager
+	Bullets *bullets = new Bullets();
+	bullets->x = 100;
+	bullets->y = 60;
+	bullets->Load();
+	bullets->WriteToVBO(scene->vbo);
+
 	// Main loop
 	while (aptMainLoop()) {
 
 		hidScanInput();
-
 		// Respond to user input
 		u32 kDown = hidKeysDown();
 		if (kDown & KEY_START) {
 			break; // break in order to return to hbmenu
-        }
+		}
 
 		u32 kHeld = hidKeysHeld();
-		moveSprite(ship, kHeld);
-        printDebugInfo();
+		moveSprite(ship, kHeld, DELTA_TIME);
+		printDebugInfo();
 
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
 			ship->Draw(scene);
+			bullets->Draw(scene);
 		C3D_FrameEnd(0);
 	}
 
 	// Deinitialize the scene
 	delete scene;
+	delete bullets;
 	delete ship;
 
 	// Deinitialize graphics
@@ -74,48 +83,28 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-static void moveSprite(Sprite* sprite, u32 kDown)
+static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime)
 {
-	sprite->x += sprite->dx;
-	sprite->y += sprite->dy;
+	sprite->x += sprite->dx * deltaTime;
+	sprite->y += sprite->dy * deltaTime;
 
 	if ((kDown & KEY_LEFT) != 0) {
-		sprite->rotation -= sprite->ang_vel;
+		sprite->rotation -= sprite->ang_vel * deltaTime;
 	}
 
 	if ((kDown & KEY_RIGHT) != 0) {
-		sprite->rotation += sprite->ang_vel;
+		sprite->rotation += sprite->ang_vel * deltaTime;
 	}
 
-	if ((kDown & KEY_UP) != 0) {
-		sprite->x += cos(sprite->rotation - M_PI_2) * 5;
-		sprite->y += sin(sprite->rotation - M_PI_2) * 5;
+	if ((kDown & KEY_B) != 0) {
+		sprite->x += cos(sprite->rotation - M_PI_2) * 80 * deltaTime;
+		sprite->y += sin(sprite->rotation - M_PI_2) * 80 * deltaTime;
 	}
 }
 
 static void printDebugInfo()
 {
-    printf("\x1b[3;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime() * 6.0f);
-    printf("\x1b[4;1HGPU:     %6.2f%%\x1b[K", C3D_GetDrawingTime() * 6.0f);
-    printf("\x1b[5;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage() * 100.0f);
-}
-
-static SceneContext* sceneInit()
-{
-	SceneContext* scene = new SceneContext();
-	scene->InitShader();
-
-	// Allocate VBO
-    scene->vbo = (VBOEntry*) linearAlloc(sizeof(VBOEntry) * 6);
-
-    // Configure buffers
-	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
-	BufInfo_Init(bufInfo);
-	BufInfo_Add(bufInfo, scene->vbo, sizeof(VBOEntry), 2, 0x10);
-
-	// Compute the projection matrix
-	// Note: we're setting top to 240 here so origin is at top left.
-	Mtx_OrthoTilt(&scene->projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
-
-	return scene;
+	printf("\x1b[3;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime() * 6.0f);
+	printf("\x1b[4;1HGPU:     %6.2f%%\x1b[K", C3D_GetDrawingTime() * 6.0f);
+	printf("\x1b[5;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage() * 100.0f);
 }

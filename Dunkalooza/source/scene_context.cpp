@@ -1,5 +1,22 @@
 #include "scene_context.h"
 
+SceneContext::SceneContext()
+{
+	InitShader();
+
+	// Allocate VBO
+	vbo = (VBOEntry*) linearAlloc(sizeof(VBOEntry) * 12);
+
+	// Configure buffers
+	C3D_BufInfo* bufInfo = C3D_GetBufInfo();
+	BufInfo_Init(bufInfo);
+	BufInfo_Add(bufInfo, vbo, sizeof(VBOEntry), 2, 0x10);
+
+	// Compute the projection matrix
+	// Note: we're setting top to 240 here so origin is at top left.
+	Mtx_OrthoTilt(&projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
+}
+
 void SceneContext::InitShader() {
     // Load the vertex shader, create a shader program and bind it
 	vshader_dvlb = DVLB_ParseFile((u32*) vshader_shbin, vshader_shbin_size);

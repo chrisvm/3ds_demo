@@ -31,12 +31,13 @@ public:
     C3D_Tex spritesheet_tex;
 
 	C3D_Mtx* CalculateModelMatrix();
-    void WriteToVBO(VBOEntry* vbo, int startingIndex);
+    void WriteToVBO(VBOEntry* vbo);
     void BindToTextureUnit(int unitIndex);
     void Draw(SceneContext* scene);
 
 protected:
     void LoadImage(const unsigned char* in, size_t size);
+    int vboIndex;
 
 private:
 	C3D_Mtx model;
