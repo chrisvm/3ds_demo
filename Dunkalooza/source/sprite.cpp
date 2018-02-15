@@ -65,7 +65,7 @@ void Sprite::LoadImage(const unsigned char* in, size_t size)
                             (u32*) spritesheet_tex.data,
                             buffDimension, TEXTURE_TRANSFER_FLAGS);
     gspWaitForPPF();
-    
+
     C3D_TexSetFilter(&spritesheet_tex, GPU_LINEAR, GPU_NEAREST);
 
     free(image);
@@ -86,4 +86,10 @@ void Sprite::ShiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
         *dst++ = g;
         *dst++ = r;
     }
+}
+
+void Sprite::MoveToFacing(float speed)
+{
+	x += cos(rotation - M_PI_2) * speed;
+	y += sin(rotation - M_PI_2) * speed;
 }

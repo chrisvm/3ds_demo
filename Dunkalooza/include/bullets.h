@@ -6,6 +6,6 @@
 class Bullets : public Sprite {
 public:
 	void Load();
-	void Update();
+	void Update(float deltaTime);
 };
 #endif

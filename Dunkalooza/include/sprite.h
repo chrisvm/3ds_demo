@@ -34,6 +34,7 @@ public:
     void WriteToVBO(VBOEntry* vbo);
     void BindToTextureUnit(int unitIndex);
     void Draw(SceneContext* scene);
+    void MoveToFacing(float speed);
 
 protected:
     void LoadImage(const unsigned char* in, size_t size);

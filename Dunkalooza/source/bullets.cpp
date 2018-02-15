@@ -9,7 +9,7 @@ void Bullets::Load()
     this->height = 32;
 }
 
-void Bullets::Update()
+void Bullets::Update(float deltaTime)
 {
 
 }

@@ -14,6 +14,7 @@
 
 static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime);
 static void printDebugInfo();
+static void shootBullet(Ship* ship, Bullets* bullet);
 
 int main(int argc, char **argv) {
 	// Initialize graphics
@@ -44,6 +45,8 @@ int main(int argc, char **argv) {
 
 	// create bullet manager
 	Bullets *bullets = new Bullets();
+	bullets->origin_y = 0.25f;
+	bullets->origin_x = 0.5f;
 	bullets->x = 100;
 	bullets->y = 60;
 	bullets->Load();
@@ -61,6 +64,12 @@ int main(int argc, char **argv) {
 
 		u32 kHeld = hidKeysHeld();
 		moveSprite(ship, kHeld, DELTA_TIME);
+		
+		if ((kDown & KEY_A) != 0) {
+			shootBullet(ship, bullets);
+		}
+
+		bullets->Update(DELTA_TIME);
 		printDebugInfo();
 
 		// Render the scene
@@ -96,8 +105,7 @@ static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime)
 	}
 
 	if ((kDown & KEY_B) != 0) {
-		sprite->x += cos(sprite->rotation - M_PI_2) * 80 * deltaTime;
-		sprite->y += sin(sprite->rotation - M_PI_2) * 80 * deltaTime;
+		sprite->MoveToFacing(80 * DELTA_TIME);
 	}
 }
 
@@ -106,4 +114,10 @@ static void printDebugInfo()
 	printf("\x1b[3;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime() * 6.0f);
 	printf("\x1b[4;1HGPU:     %6.2f%%\x1b[K", C3D_GetDrawingTime() * 6.0f);
 	printf("\x1b[5;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage() * 100.0f);
+}
+
+static void shootBullet(Ship* ship, Bullets* bullet)
+{
+	bullet->rotation = ship->rotation;
+
 }
