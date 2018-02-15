@@ -14,7 +14,6 @@
 
 static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime);
 static void printDebugInfo();
-static const float DELTA_TIME = 1/128.0f;
 
 int main(int argc, char **argv) {
 	// Initialize graphics
