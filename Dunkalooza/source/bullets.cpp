@@ -11,5 +11,5 @@ void Bullets::Load()
 
 void Bullets::Update(float deltaTime)
 {
-
+	MoveToFacing(300 * deltaTime);
 }
