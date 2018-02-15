@@ -119,7 +119,7 @@ static void printDebugInfo()
 static void shootBullet(Ship* ship, Bullets* bullet)
 {
 	bullet->rotation = ship->rotation;
-	bullet->x = ship->x + (cos(ship->rotation - M_PI_2) * 10);
-	bullet->y = ship->y + (sin(ship->rotation - M_PI_2) * 10); 
-
+	bullet->x = ship->x;
+	bullet->y = ship->y;
+	bullet->MoveToFacing(10); 
 }
