@@ -65,7 +65,7 @@ void Sprite::LoadImage(const unsigned char* in, size_t size)
                             (u32*) spritesheet_tex.data,
                             buffDimension, TEXTURE_TRANSFER_FLAGS);
     gspWaitForPPF();
-
+    
     C3D_TexSetFilter(&spritesheet_tex, GPU_LINEAR, GPU_NEAREST);
 
     free(image);

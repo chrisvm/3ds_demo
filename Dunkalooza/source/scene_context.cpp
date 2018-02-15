@@ -40,7 +40,6 @@ void SceneContext::InitShader() {
 
 	// Configure the first fragment shading substage to just pass through
     // the texture color
-	// See https://www.opengl.org/sdk/docs/man2/xhtml/glTexEnv.xml for more insight
 	C3D_TexEnv* env = C3D_GetTexEnv(0);
 	C3D_TexEnvSrc(env, C3D_Both, GPU_TEXTURE0, 0, 0);
 	C3D_TexEnvOp(env, C3D_Both, 0, 0, 0);
