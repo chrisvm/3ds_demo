@@ -3,7 +3,7 @@
 #include "sprite.h"
 #include "bullet_png.h"
 
-class Bullets : public Sprite {
+class Bullet : public Sprite {
 public:
 	void Load();
 	void Update(float deltaTime);

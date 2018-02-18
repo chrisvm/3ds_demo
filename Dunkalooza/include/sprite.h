@@ -6,7 +6,8 @@
 #include "scene_context.h"
 
 //simple sprite struct
-class Sprite {
+class Sprite
+{
 
 public:
     // screen co-ordinates

@@ -1,6 +1,6 @@
-#include "bullets.h"
+#include "bullet.h"
 
-void Bullets::Load()
+void Bullet::Load()
 {
 	LoadImage(bullet_png, bullet_png_size);
 	imageDimension = {0.0f, 1.0f, 0.0f, 1.0f};
@@ -9,7 +9,7 @@ void Bullets::Load()
     this->height = 32;
 }
 
-void Bullets::Update(float deltaTime)
+void Bullet::Update(float deltaTime)
 {
 	MoveToFacing(300 * deltaTime);
 }

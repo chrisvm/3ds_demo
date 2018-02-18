@@ -10,11 +10,12 @@
 #include "scene_context.h"
 #include "sprite.h"
 #include "ship.h"
-#include "bullets.h"
+#include "bullet_manager.h"
+#include "bullet.h"
 
 static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime);
 static void printDebugInfo();
-static void shootBullet(Ship* ship, Bullets* bullet);
+static void shootBullet(Ship* ship, Bullet* bullet);
 
 int main(int argc, char **argv) {
 	// Initialize graphics
@@ -44,7 +45,9 @@ int main(int argc, char **argv) {
 	ship->dx = ship->dy = 0;
 
 	// create bullet manager
-	Bullets *bullets = new Bullets();
+	BulletManager *b_manager = new BulletManager();
+
+	Bullet *bullets = new Bullet();
 	bullets->origin_y = 0.25f;
 	bullets->origin_x = 0.5f;
 	bullets->x = 100;
@@ -64,7 +67,7 @@ int main(int argc, char **argv) {
 
 		u32 kHeld = hidKeysHeld();
 		moveSprite(ship, kHeld, DELTA_TIME);
-		
+
 		if ((kDown & KEY_A) != 0) {
 			shootBullet(ship, bullets);
 		}
@@ -116,10 +119,10 @@ static void printDebugInfo()
 	printf("\x1b[5;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage() * 100.0f);
 }
 
-static void shootBullet(Ship* ship, Bullets* bullet)
+static void shootBullet(Ship* ship, Bullet* bullet)
 {
 	bullet->rotation = ship->rotation;
 	bullet->x = ship->x;
 	bullet->y = ship->y;
-	bullet->MoveToFacing(10); 
+	bullet->MoveToFacing(10);
 }
