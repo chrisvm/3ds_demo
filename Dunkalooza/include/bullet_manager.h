@@ -7,6 +7,7 @@ struct BulletPosition
 {
 	vec2f pos;
 	float rotation;
+
 	BulletPosition(vec2f pos, float rotation)
 	{
 		this->pos = pos;
@@ -24,15 +25,18 @@ class BulletManager
 {
 	std::vector<BulletPosition*> *m_bullets;
 	Bullet* bullet_sprite;
-	float m_bullet_speed = 10;
+	float m_bullet_speed = 150;
+	vec2f screen_size;
 
 public:
 	BulletManager();
 	~BulletManager();
+
 	void CreateBullet(float x, float y, float rotation);
 	void WriteToVBO(VBOEntry* vbo);
 	void Update(float delta_time);
 	void Draw(SceneContext* scene);
+	void SetScreenSize(vec2f size);
 };
 
 

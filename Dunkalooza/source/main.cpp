@@ -46,6 +46,7 @@ int main(int argc, char **argv) {
 	// create bullet manager
 	BulletManager *b_manager = new BulletManager();
 	b_manager->WriteToVBO(scene->vbo);
+	b_manager->SetScreenSize(vec2f(SCREEN_WIDTH, SCREEN_HEIGHT));
 
 	// Main loop
 	while (aptMainLoop()) {

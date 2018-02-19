@@ -51,3 +51,8 @@ void BulletManager::Draw(SceneContext* scene)
 		bullet_sprite->Draw(scene);
 	}
 }
+
+void BulletManager::SetScreenSize(vec2f size)
+{
+	screen_size = size;
+}
