@@ -61,12 +61,12 @@ int main(int argc, char **argv) {
 		u32 kHeld = hidKeysHeld();
 		moveSprite(ship, kHeld, DELTA_TIME);
 
+		b_manager->Update(DELTA_TIME);
 		if ((kDown & KEY_A) != 0) {
 			b_manager->CreateBullet(ship->pos.x, ship->pos.y, ship->rotation);
 		}
 
 		printDebugInfo();
-		b_manager->Update(DELTA_TIME);
 
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);

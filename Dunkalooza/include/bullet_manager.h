@@ -1,7 +1,7 @@
 #ifndef __BULLET_MANAGER_H_
 #define __BULLET_MANAGER_H_
 #include "bullet.h"
-#include <vector>
+#include <list>
 
 struct BulletPosition
 {
@@ -23,10 +23,10 @@ struct BulletPosition
 
 class BulletManager
 {
-	std::vector<BulletPosition*> *m_bullets;
+	std::list<BulletPosition*> *m_bullets;
 	Bullet* bullet_sprite;
 	float m_bullet_speed = 150;
-	vec2f screen_size;
+	vec2f m_screen_size;
 
 public:
 	BulletManager();

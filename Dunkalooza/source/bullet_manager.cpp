@@ -1,8 +1,15 @@
 #include "bullet_manager.h"
 
+bool between(vec2f point, vec2f min, vec2f max)
+{
+	if (point.x < min.x || point.y < min.y) return false;
+	if (point.x > max.x || point.y > max.y) return false;
+	return true;
+}
+
 BulletManager::BulletManager()
 {
-	m_bullets = new std::vector<BulletPosition*>();
+	m_bullets = new std::list<BulletPosition*>();
 	bullet_sprite = new Bullet();
 	bullet_sprite->Load();
 	bullet_sprite->origin.y = 0.25f;
@@ -11,7 +18,7 @@ BulletManager::BulletManager()
 
 BulletManager::~BulletManager()
 {
-	std::vector<BulletPosition*>::iterator bullet_pos = m_bullets->begin();
+	std::list<BulletPosition*>::iterator bullet_pos = m_bullets->begin();
 	for (; bullet_pos != m_bullets->end(); bullet_pos++) {
 		delete *bullet_pos;
 	}
@@ -31,9 +38,16 @@ void BulletManager::WriteToVBO(VBOEntry* vbo)
 
 void BulletManager::Update(float delta_time)
 {
+	if (m_bullets->size() == 0) return;
+
 	vec2f movemnt;
-	std::vector<BulletPosition*>::iterator bullet_pos = m_bullets->begin();
+	std::list<BulletPosition*>::iterator bullet_pos = m_bullets->begin();
 	for (; bullet_pos != m_bullets->end(); bullet_pos++) {
+		if (!between((*bullet_pos)->pos, vec2f(0, 0), m_screen_size)) {
+			bullet_pos = m_bullets->erase(bullet_pos);
+			if (bullet_pos == m_bullets->end()) continue;
+		}
+
 		movemnt.x = cos((*bullet_pos)->rotation - M_PI_2) * m_bullet_speed * delta_time;
 		movemnt.y = sin((*bullet_pos)->rotation - M_PI_2) * m_bullet_speed * delta_time;
 		(*bullet_pos)->pos += movemnt;
@@ -43,7 +57,7 @@ void BulletManager::Update(float delta_time)
 void BulletManager::Draw(SceneContext* scene)
 {
 	BulletPosition* b_pos;
-	std::vector<BulletPosition*>::iterator bullet_pos = m_bullets->begin();
+	std::list<BulletPosition*>::iterator bullet_pos = m_bullets->begin();
 	for (; bullet_pos != m_bullets->end(); bullet_pos++) {
 		b_pos = *bullet_pos;
 		bullet_sprite->pos = b_pos->pos;
@@ -54,5 +68,5 @@ void BulletManager::Draw(SceneContext* scene)
 
 void BulletManager::SetScreenSize(vec2f size)
 {
-	screen_size = size;
+	m_screen_size = size;
 }
