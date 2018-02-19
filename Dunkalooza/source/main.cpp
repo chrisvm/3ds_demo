@@ -15,7 +15,6 @@
 
 static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime);
 static void printDebugInfo();
-static void shootBullet(Ship* ship, Bullet* bullet);
 
 int main(int argc, char **argv) {
 	// Initialize graphics
@@ -34,26 +33,19 @@ int main(int argc, char **argv) {
 
 	// create sprites
 	Ship *ship = new Ship();
-	ship->origin_x = ship->origin_y = 0.5f;
+	ship->origin.x = ship->origin.y = 0.5f;
 	ship->ang_vel = 3;
 	ship->Load();
 	ship->WriteToVBO(scene->vbo);
 
 	// place on center
-	ship->x = SCREEN_WIDTH / 2 - (ship->width / 2);
-	ship->y = SCREEN_HEIGHT / 2 - (ship->height / 2);
-	ship->dx = ship->dy = 0;
+	ship->pos.x = SCREEN_WIDTH / 2 - (ship->width / 2);
+	ship->pos.y = SCREEN_HEIGHT / 2 - (ship->height / 2);
+	ship->vel.x = ship->vel.y = 0;
 
 	// create bullet manager
 	BulletManager *b_manager = new BulletManager();
-
-	Bullet *bullets = new Bullet();
-	bullets->origin_y = 0.25f;
-	bullets->origin_x = 0.5f;
-	bullets->x = 100;
-	bullets->y = 60;
-	bullets->Load();
-	bullets->WriteToVBO(scene->vbo);
+	b_manager->WriteToVBO(scene->vbo);
 
 	// Main loop
 	while (aptMainLoop()) {
@@ -69,23 +61,23 @@ int main(int argc, char **argv) {
 		moveSprite(ship, kHeld, DELTA_TIME);
 
 		if ((kDown & KEY_A) != 0) {
-			shootBullet(ship, bullets);
+			b_manager->CreateBullet(ship->pos.x, ship->pos.y, ship->rotation);
 		}
 
-		bullets->Update(DELTA_TIME);
 		printDebugInfo();
+		b_manager->Update(DELTA_TIME);
 
 		// Render the scene
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 			C3D_FrameDrawOn(target);
 			ship->Draw(scene);
-			bullets->Draw(scene);
+			b_manager->Draw(scene);
 		C3D_FrameEnd(0);
 	}
 
 	// Deinitialize the scene
 	delete scene;
-	delete bullets;
+	delete b_manager;
 	delete ship;
 
 	// Deinitialize graphics
@@ -96,8 +88,8 @@ int main(int argc, char **argv) {
 
 static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime)
 {
-	sprite->x += sprite->dx * deltaTime;
-	sprite->y += sprite->dy * deltaTime;
+	sprite->pos.x += sprite->vel.x * deltaTime;
+	sprite->pos.y += sprite->vel.y * deltaTime;
 
 	if ((kDown & KEY_LEFT) != 0) {
 		sprite->rotation -= sprite->ang_vel * deltaTime;
@@ -117,12 +109,4 @@ static void printDebugInfo()
 	printf("\x1b[3;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime() * 6.0f);
 	printf("\x1b[4;1HGPU:     %6.2f%%\x1b[K", C3D_GetDrawingTime() * 6.0f);
 	printf("\x1b[5;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage() * 100.0f);
-}
-
-static void shootBullet(Ship* ship, Bullet* bullet)
-{
-	bullet->rotation = ship->rotation;
-	bullet->x = ship->x;
-	bullet->y = ship->y;
-	bullet->MoveToFacing(10);
 }

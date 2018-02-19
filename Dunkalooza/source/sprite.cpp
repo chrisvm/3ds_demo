@@ -3,10 +3,10 @@
 C3D_Mtx* Sprite::CalculateModelMatrix()
 {
 	Mtx_Identity(&model);
-	Mtx_Translate(&model, this->x, this->y, 0, true);
+	Mtx_Translate(&model, pos.x, pos.y, 0, true);
 	Mtx_RotateZ(&model, rotation, true);
-	float x_trans = -this->origin_x * this->width;
-	float y_trans = -this->origin_y * this->height;
+	float x_trans = -this->origin.x * this->width;
+	float y_trans = -this->origin.y * this->height;
 	Mtx_Translate(&model, x_trans, y_trans, 0, true);
 	return &model;
 }
@@ -90,6 +90,6 @@ void Sprite::ShiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
 
 void Sprite::MoveToFacing(float speed)
 {
-	x += cos(rotation - M_PI_2) * speed;
-	y += sin(rotation - M_PI_2) * speed;
+	pos.x += cos(rotation - M_PI_2) * speed;
+	pos.y += sin(rotation - M_PI_2) * speed;
 }

@@ -3,6 +3,7 @@
 #include <citro3d.h>
 #include "types.h"
 #include "lodepng.h"
+#include "vec2.h"
 #include "scene_context.h"
 
 //simple sprite struct
@@ -11,16 +12,16 @@ class Sprite
 
 public:
     // screen co-ordinates
-    float x, y;
+    vec2f pos;
 
     // screen width and height
     float width, height;
 
     // velocity
-    float dx, dy;
+    vec2f vel;
 
     // sprite origin
-    float origin_x, origin_y;
+    vec2f origin;
 
 	// ratation support
 	float rotation, ang_vel;
