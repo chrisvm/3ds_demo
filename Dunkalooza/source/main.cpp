@@ -1,5 +1,6 @@
 #include <3ds.h>
 #include <citro3d.h>
+#include <physics.h>
 
 #include <string.h>
 #include <stdio.h>

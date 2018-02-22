@@ -15,6 +15,10 @@ SceneContext::SceneContext()
 	// Compute the projection matrix
 	// Note: we're setting top to 240 here so origin is at top left.
 	Mtx_OrthoTilt(&projection, 0.0, 400.0, 240.0, 0.0, 0.0, 1.0, true);
+
+	// init physics
+	//const C3D_FVec gravity = FVec3_New(0.0f, 0.0f, 0.0f);
+	Scene_Init(&phy_scene, DELTA_TIME, FVec3_New(0.0f, 0.0f, 0.0f), 1);
 }
 
 void SceneContext::InitShader() {

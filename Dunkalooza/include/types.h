@@ -17,7 +17,8 @@
 #define CLEAR_COLOR 0x000000FF
 #define SCREEN_WIDTH 400
 #define SCREEN_HEIGHT 240
-#define DELTA_TIME 1 / 128.0f
+
+const float DELTA_TIME = 1 / 128.0f;
 
 struct ImageDimension {
     float left, right, top, bottom;
