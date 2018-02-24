@@ -43,6 +43,7 @@ int main(int argc, char **argv) {
 	ship->pos.x = SCREEN_WIDTH / 2 - (ship->width / 2);
 	ship->pos.y = SCREEN_HEIGHT / 2 - (ship->height / 2);
 	ship->vel.x = ship->vel.y = 0;
+	ship->CreatePhysicsBody(&scene->phy_scene);
 
 	// create bullet manager
 	BulletManager *b_manager = new BulletManager();

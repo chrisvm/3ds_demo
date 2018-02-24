@@ -5,8 +5,10 @@
 #include "types.h"
 
 class Ship : public Sprite {
-
+	C3D_Body* m_body;
+	
 public:
+	void CreatePhysicsBody(C3D_Scene* phy_scene);
 	void Load();
 };
 
