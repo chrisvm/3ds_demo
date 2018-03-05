@@ -15,9 +15,6 @@ void Ship::CreatePhysicsBody(C3D_Scene* phy_scene)
 	C3D_BodyParameters bodyParameters = {};
 	bodyParameters.position = FVec3_New(pos.x, pos.y, 0.0f);
 	bodyParameters.bodyType = BodyType_Dynamic;
-    bodyParameters.angularDamping = 0.01f;
-    bodyParameters.linearVelocity = FVec3_New(1.0f, 0.0f, 0.0f);
-    bodyParameters.angularVelocity = FVec3_New(0.0f, 0.0f, 0.0f);
 	m_body = Scene_CreateBody(phy_scene, &bodyParameters);
 
 	//Initialize box parameters.
@@ -26,7 +23,7 @@ void Ship::CreatePhysicsBody(C3D_Scene* phy_scene)
 
 	C3D_Transform transform = {};
 	Mtx_Identity(&transform.rotation);
-    transform.position = FVec3_New(-width/2.0f, -height/2.0f, 0.0f);
+    transform.position = FVec3_New(width/2.0f, height/2.0f, 0.0f);
 	C3D_FVec box_size = FVec3_New(width, height, 1.0f);
 	BoxParameters_Init(&boxParameters, transform, box_size);
 
@@ -41,6 +38,5 @@ void Ship::AddForceToFacing(int forceMagnitude)
 
 void Ship::Update(float deltaTime)
 {
-    pos.x = m_body->transform.position.x;
-    pos.y = m_body->transform.position.y;
+    rotation = m_body->quaternion;
 }
