@@ -14,7 +14,7 @@
 #include "bullet_manager.h"
 #include "bullet.h"
 
-static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime);
+static void moveShip(Ship* sprite, u32 kDown, float deltaTime);
 static void printDebugInfo();
 
 int main(int argc, char **argv) {
@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 		}
 
 		u32 kHeld = hidKeysHeld();
-		moveSprite(ship, kHeld, DELTA_TIME);
+		moveShip(ship, kHeld, DELTA_TIME);
 
 		b_manager->Update(DELTA_TIME);
 		if ((kDown & KEY_A) != 0) {
@@ -89,11 +89,8 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-static void moveSprite(Sprite* sprite, u32 kDown, float deltaTime)
+static void moveShip(Ship* sprite, u32 kDown, float deltaTime)
 {
-	sprite->pos.x += sprite->vel.x * deltaTime;
-	sprite->pos.y += sprite->vel.y * deltaTime;
-
 	if ((kDown & KEY_LEFT) != 0) {
 		sprite->rotation -= sprite->ang_vel * deltaTime;
 	}
