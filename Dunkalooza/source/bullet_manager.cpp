@@ -25,7 +25,7 @@ BulletManager::~BulletManager()
 	delete m_bullets;
 }
 
-void BulletManager::CreateBullet(float x, float y, float rotation)
+void BulletManager::CreateBullet(float x, float y, C3D_FQuat rotation)
 {
 	BulletPosition* bullet_pos = new BulletPosition(x, y, rotation);
 	m_bullets->push_back(bullet_pos);
@@ -48,8 +48,8 @@ void BulletManager::Update(float delta_time)
 			if (bullet_pos == m_bullets->end()) continue;
 		}
 
-		movemnt.x = cos((*bullet_pos)->rotation - M_PI_2) * m_bullet_speed * delta_time;
-		movemnt.y = sin((*bullet_pos)->rotation - M_PI_2) * m_bullet_speed * delta_time;
+		//movemnt.x = cos((*bullet_pos)->rotation - M_PI_2) * m_bullet_speed * delta_time;
+		//movemnt.y = sin((*bullet_pos)->rotation - M_PI_2) * m_bullet_speed * delta_time;
 		(*bullet_pos)->pos += movemnt;
 	}
 }

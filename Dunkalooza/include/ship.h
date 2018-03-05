@@ -6,10 +6,12 @@
 
 class Ship : public Sprite {
 	C3D_Body* m_body;
-	
+
 public:
 	void CreatePhysicsBody(C3D_Scene* phy_scene);
+    void AddForceToFacing(int forceMagnitude);
 	void Load();
+    void Update(float deltaTime);
 };
 
 #endif

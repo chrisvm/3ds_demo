@@ -24,7 +24,7 @@ public:
     vec2f origin;
 
 	// ratation support
-	float rotation, ang_vel;
+    C3D_FQuat rotation;
 
     // image dimension
     ImageDimension imageDimension;
@@ -32,11 +32,11 @@ public:
     // gpu texture
     C3D_Tex spritesheet_tex;
 
+    Sprite();
 	C3D_Mtx* CalculateModelMatrix();
     void WriteToVBO(VBOEntry* vbo);
     void BindToTextureUnit(int unitIndex);
     void Draw(SceneContext* scene);
-    void MoveToFacing(float speed);
 
 protected:
     void LoadImage(const unsigned char* in, size_t size);

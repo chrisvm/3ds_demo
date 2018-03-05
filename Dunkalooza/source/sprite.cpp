@@ -1,10 +1,17 @@
 #include "sprite.h"
 
+Sprite::Sprite()
+{
+    rotation = Quat_Identity();
+}
+
 C3D_Mtx* Sprite::CalculateModelMatrix()
 {
-	Mtx_Identity(&model);
-	Mtx_Translate(&model, pos.x, pos.y, 0, true);
-	Mtx_RotateZ(&model, rotation, true);
+    C3D_Mtx rot;
+    Mtx_FromQuat(&rot, rotation);
+    Mtx_Identity(&model);
+    Mtx_Translate(&model, pos.x, pos.y, 0, true);
+    Mtx_Multiply(&model, &model, &rot);
 	float x_trans = -this->origin.x * this->width;
 	float y_trans = -this->origin.y * this->height;
 	Mtx_Translate(&model, x_trans, y_trans, 0, true);
@@ -86,10 +93,4 @@ void Sprite::ShiftEndianess(u8* src, u8* dst, unsigned width, unsigned height)
         *dst++ = g;
         *dst++ = r;
     }
-}
-
-void Sprite::MoveToFacing(float speed)
-{
-	pos.x += cos(rotation - M_PI_2) * speed;
-	pos.y += sin(rotation - M_PI_2) * speed;
 }

@@ -8,8 +8,3 @@ void Bullet::Load()
     this->width = 16;
     this->height = 32;
 }
-
-void Bullet::Update(float deltaTime)
-{
-	MoveToFacing(300 * deltaTime);
-}

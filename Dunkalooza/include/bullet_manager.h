@@ -6,14 +6,14 @@
 struct BulletPosition
 {
 	vec2f pos;
-	float rotation;
+	C3D_FQuat rotation;
 
-	BulletPosition(vec2f pos, float rotation)
+	BulletPosition(vec2f pos, C3D_FQuat rotation)
 	{
 		this->pos = pos;
 		this->rotation = rotation;
 	}
-	BulletPosition(float x, float y, float rotation)
+	BulletPosition(float x, float y, C3D_FQuat rotation)
 	{
 		this->pos.x = x;
 		this->pos.y = y;
@@ -32,7 +32,7 @@ public:
 	BulletManager();
 	~BulletManager();
 
-	void CreateBullet(float x, float y, float rotation);
+	void CreateBullet(float x, float y, C3D_FQuat rotation);
 	void WriteToVBO(VBOEntry* vbo);
 	void Update(float delta_time);
 	void Draw(SceneContext* scene);

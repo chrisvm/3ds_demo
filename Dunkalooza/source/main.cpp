@@ -35,14 +35,12 @@ int main(int argc, char **argv) {
 	// create sprites
 	Ship *ship = new Ship();
 	ship->origin.x = ship->origin.y = 0.5f;
-	ship->ang_vel = 3;
 	ship->Load();
 	ship->WriteToVBO(scene->vbo);
 
 	// place on center
 	ship->pos.x = SCREEN_WIDTH / 2 - (ship->width / 2);
 	ship->pos.y = SCREEN_HEIGHT / 2 - (ship->height / 2);
-	ship->vel.x = ship->vel.y = 0;
 	ship->CreatePhysicsBody(&scene->phy_scene);
 
 	// create bullet manager
@@ -63,7 +61,10 @@ int main(int argc, char **argv) {
 		u32 kHeld = hidKeysHeld();
 		moveShip(ship, kHeld, DELTA_TIME);
 
+        //Scene_Step(&scene->phy_scene);
+        ship->Update(DELTA_TIME);
 		b_manager->Update(DELTA_TIME);
+
 		if ((kDown & KEY_A) != 0) {
 			b_manager->CreateBullet(ship->pos.x, ship->pos.y, ship->rotation);
 		}
@@ -89,18 +90,18 @@ int main(int argc, char **argv) {
 	return 0;
 }
 
-static void moveShip(Ship* sprite, u32 kDown, float deltaTime)
+static void moveShip(Ship* ship, u32 kDown, float deltaTime)
 {
 	if ((kDown & KEY_LEFT) != 0) {
-		sprite->rotation -= sprite->ang_vel * deltaTime;
+        ship->rotation = Quat_RotateZ(ship->rotation, -10 * deltaTime, true);
 	}
 
 	if ((kDown & KEY_RIGHT) != 0) {
-		sprite->rotation += sprite->ang_vel * deltaTime;
+        ship->rotation = Quat_RotateZ(ship->rotation, 10 * deltaTime, true);
 	}
 
 	if ((kDown & KEY_B) != 0) {
-		sprite->MoveToFacing(80 * DELTA_TIME);
+		ship->AddForceToFacing(80 * DELTA_TIME);
 	}
 }
 
