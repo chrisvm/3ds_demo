@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
 	// place on center
 	ship->pos.x = SCREEN_WIDTH / 2 - (ship->width / 2);
 	ship->pos.y = SCREEN_HEIGHT / 2 - (ship->height / 2);
-	ship->CreatePhysicsBody(&scene->phy_scene);
+	ship->CreatePhysicsBody(scene->phy_scene);
 
 	// create bullet manager
 	BulletManager *b_manager = new BulletManager();
@@ -61,8 +61,8 @@ int main(int argc, char **argv) {
 		u32 kHeld = hidKeysHeld();
 		moveShip(ship, kHeld, DELTA_TIME);
 
-        //Scene_Step(&scene->phy_scene);
-        //ship->Update(DELTA_TIME);
+        Scene_Step(scene->phy_scene);
+        ship->Update(DELTA_TIME);
 		b_manager->Update(DELTA_TIME);
 
 		if ((kDown & KEY_A) != 0) {

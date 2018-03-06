@@ -15,7 +15,7 @@ struct SceneContext {
 	int uLoc_model;
     VBOEntry *vbo;
     C3D_Mtx projection;
-	C3D_Scene phy_scene;
+	C3D_Scene *phy_scene;
 
 	SceneContext();
     ~SceneContext();

@@ -13,7 +13,11 @@ void Ship::CreatePhysicsBody(C3D_Scene* phy_scene)
 {
 	// create body
 	C3D_BodyParameters bodyParameters = {};
+	bodyParameters.axis = FVec3_New(0, 0, 0);
+	bodyParameters.linearVelocity = FVec3_New(0, 0, 0);
 	bodyParameters.position = FVec3_New(pos.x, pos.y, 0.0f);
+	bodyParameters.radianAngle = 0;
+	bodyParameters.angularVelocity = FVec3_New(1.0f, 0.0f, 0.0f);
 	bodyParameters.bodyType = BodyType_Dynamic;
 	m_body = Scene_CreateBody(phy_scene, &bodyParameters);
 
@@ -38,5 +42,6 @@ void Ship::AddForceToFacing(int forceMagnitude)
 
 void Ship::Update(float deltaTime)
 {
-    rotation = m_body->quaternion;
+	printf("\x1b[6;1HPosition: x = %f y = %f", m_body->transform.position.x, m_body->transform.position.y);
+    rotation = Quat_FromMtx(&m_body->transform.rotation);
 }
